@@ -1,8 +1,19 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
+
+const corsOptions = {
+  origin: '*',
+  methods: ['GET'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 const phrases = [
     "Gracias a Barkibu, Max superó una cirugía complicada sin preocupaciones económicas.",
@@ -27,7 +38,7 @@ const phrases = [
     "Con la ayuda de Barkibu, Bella pudo recibir atención avanzada para su problema renal sin generar deudas a su dueño."
   ];
 
-app.get('/dog', async (req, res) => {
+app.get('/post', async (req, res) => {
     try {      
       const response = await axios.get('https://random.dog/woof.json');
         
