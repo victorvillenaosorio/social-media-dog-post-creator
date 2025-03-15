@@ -38,16 +38,20 @@ const phrases = [
     "Con la ayuda de Barkibu, Bella pudo recibir atención avanzada para su problema renal sin generar deudas a su dueño."
   ];
 
+  const hashtags = ['#cute', '#CuteDog', '#doggo', '#puppy', '#fluffy', '#adorable', '#pet', '#love', '#happy', '#BestFriend', '#PuppyLove', '#DogsOfInstagram', '#DogLover'];
+
 app.get('/post', async (req, res) => {
     try {      
       const response = await axios.get('https://random.dog/woof.json');
         
       const { url } = response.data;        
-      const randomMessage = phrases[Math.floor(Math.random() * phrases.length)];
+      const randomMessage = phrases[Math.floor(Math.random() * phrases.length)];      
+      const randomHashtags = hashtags.sort(() => 0.5 - Math.random()).slice(0, 2);
 
       res.json({
         message: randomMessage,
-        imageUrl: url
+        imageUrl: url,
+        hashtags: randomHashtags
       });
     } catch (error) {      
       res.status(500).json({ message: "Error while trying to create the image", error: error.message });

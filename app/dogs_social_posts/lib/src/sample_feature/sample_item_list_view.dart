@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:math';
 
 import '../settings/settings_view.dart';
 import 'sample_item.dart';
@@ -38,10 +39,12 @@ class _SampleItemListViewState extends State<SampleItemListView> {
           items.length + 1,
           message: data['message'],
           imageUrl: data['imageUrl'],
+          likes: Random().nextInt(999), // Add random number of likes
+          hashtags: data['hashtags'] != null ? List<String>.from(data['hashtags']) : [],
         ));
       });
     } else {      
-      print('Failed to load dog');
+      print('Failed to load post');
     }
   }
 
@@ -93,6 +96,10 @@ class _SampleItemListViewState extends State<SampleItemListView> {
             },
             child: Card(
               margin: const EdgeInsets.all(8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // Remove rounded borders
+              ),
+              elevation: 4, // Add shadow
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -157,12 +164,36 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                     ),
                   ),
                   Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    child: Row(
+                      children: [
+                        Transform.scale(
+                          scale: 0.6,
+                          child: const Icon(Icons.favorite),
+                        ),
+                        const SizedBox(width: 4),
+                        Text('${item.likes} likes'),
+                      ],
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       item.message ?? 'SampleItem ${item.id}',
                       textAlign: TextAlign.left,
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Wrap(
+                      spacing: 4.0,
+                      children: item.hashtags.map((hashtag) => Text(
+                        hashtag,
+                        style: TextStyle(color: Colors.blue),
+                      )).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                 ],
               ),
             ),
@@ -178,9 +209,11 @@ class _SampleItemListViewState extends State<SampleItemListView> {
 }
 
 class SampleItem {
-  SampleItem(this.id, {this.message, this.imageUrl});
+  SampleItem(this.id, {this.message, this.imageUrl, this.likes = 0, this.hashtags = const []});
 
   final int id;
   final String? message;
   final String? imageUrl;
+  final int likes;
+  final List<String> hashtags;
 }
