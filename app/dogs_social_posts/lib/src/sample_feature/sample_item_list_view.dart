@@ -41,10 +41,21 @@ class _SampleItemListViewState extends State<SampleItemListView> {
           imageUrl: data['imageUrl'],
           likes: Random().nextInt(999), // Add random number of likes
           hashtags: data['hashtags'] != null ? List<String>.from(data['hashtags']) : [],
+          scheduledDate: data['scheduledDate'] != null ? DateTime.parse(data['scheduledDate']) : null,
         ));
       });
     } else {      
       print('Failed to load post');
+    }
+  }
+
+  Color _getScheduledDateColor(DateTime? scheduledDate) {
+    if (scheduledDate == null) {
+      return Colors.red;
+    } else if (scheduledDate.isAfter(DateTime.now())) {
+      return Colors.blue;
+    } else {
+      return Colors.green;
     }
   }
 
@@ -86,6 +97,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
+          final scheduledDateColor = _getScheduledDateColor(item.scheduledDate);
 
           return GestureDetector(
             onTap: () {
@@ -103,6 +115,21 @@ class _SampleItemListViewState extends State<SampleItemListView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.schedule, color: scheduledDateColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          item.scheduledDate != null
+                              ? item.scheduledDate!.toLocal().toString()
+                              : 'Not scheduled',
+                          style: TextStyle(color: scheduledDateColor),
+                        ),
+                      ],
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -209,11 +236,12 @@ class _SampleItemListViewState extends State<SampleItemListView> {
 }
 
 class SampleItem {
-  SampleItem(this.id, {this.message, this.imageUrl, this.likes = 0, this.hashtags = const []});
+  SampleItem(this.id, {this.message, this.imageUrl, this.likes = 0, this.hashtags = const [], this.scheduledDate});
 
   final int id;
   final String? message;
   final String? imageUrl;
   final int likes;
   final List<String> hashtags;
+  final DateTime? scheduledDate;
 }
