@@ -6,6 +6,7 @@ import 'dart:math';
 import '../settings/settings_view.dart';
 import '../shared/post_item_view.dart';
 import '../shared/post_item.dart';
+import '../shared/post_item_utils.dart'; // Import the new utility file
 
 class SampleItemListView extends StatefulWidget {
   const SampleItemListView({
@@ -49,16 +50,6 @@ class _SampleItemListViewState extends State<SampleItemListView> {
     }
   }
 
-  Color _getScheduledDateColor(DateTime? scheduledDate) {
-    if (scheduledDate == null) {
-      return Colors.red;
-    } else if (scheduledDate.isAfter(DateTime.now())) {
-      return Colors.blue;
-    } else {
-      return Colors.green;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +88,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
-          final scheduledDateColor = _getScheduledDateColor(item.scheduledDate);
+          final scheduledDateColor = getScheduledDateColor(item.scheduledDate);
 
           return PostItemView(scheduledDateColor: scheduledDateColor, item: item);
         },
