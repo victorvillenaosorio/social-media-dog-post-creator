@@ -1,3 +1,4 @@
+import 'package:dogs_social_posts/src/shared/post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
+                    return SampleItemDetailsView(item: SampleItem(1, message: null, hashtags: [], imageUrl: null, likes: 0, scheduledDate: null));
                   case SampleItemListView.routeName:
                   default:
                     return const SampleItemListView();
