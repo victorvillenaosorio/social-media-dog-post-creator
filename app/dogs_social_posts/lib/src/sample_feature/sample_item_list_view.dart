@@ -36,7 +36,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
       final data = json.decode(response.body);
       setState(() {
         items.add(SampleItem(
-          items.length + 1,
+          id: items.length + 1,
           message: data['message'],
           imageUrl: data['imageUrl'],
           likes: Random().nextInt(999), // Add random number of likes
