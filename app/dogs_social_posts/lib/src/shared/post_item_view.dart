@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 
-import '../sample_feature/sample_item_details_view.dart';
+import '../post_feature/post_item_details_view.dart';
 import '../settings/settings_view.dart';
 import 'post_item.dart';
 
@@ -15,7 +15,7 @@ class PostItemView extends StatelessWidget {
   });
 
   final Color scheduledDateColor;
-  final SampleItem item;
+  final PostItem item;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class PostItemView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SampleItemDetailsView(item: item),
+                  builder: (context) => PostItemDetailsView(item: item),
                 ),
               );
             },
@@ -133,7 +133,7 @@ class PostItemView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      item.message ?? 'SampleItem ${item.id}',
+                      item.message ?? 'PostItem ${item.id}',
                       textAlign: TextAlign.left,
                     ),
                   ),

@@ -1,4 +1,4 @@
-class SampleItem {
+class PostItem {
   final int id;
   final String? message;
   final List<String> hashtags;
@@ -6,7 +6,7 @@ class SampleItem {
   final int likes;
   final DateTime? scheduledDate;
 
-  SampleItem({
+  PostItem({
     required this.id,
     this.message,
     required this.hashtags,
@@ -15,7 +15,7 @@ class SampleItem {
     this.scheduledDate,
   });
 
-  SampleItem copyWith({
+  PostItem copyWith({
     int? id,
     String? message,
     List<String>? hashtags,
@@ -23,7 +23,7 @@ class SampleItem {
     int? likes,
     DateTime? scheduledDate,
   }) {
-    return SampleItem(
+    return PostItem(
       id: id ?? this.id,
       message: message ?? this.message,
       hashtags: hashtags ?? this.hashtags,

@@ -1,24 +1,25 @@
 import 'package:dogs_social_posts/src/shared/post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../shared/post_item_view.dart';
 import '../shared/post_item_utils.dart'; // Import the new utility file
 
-class SampleItemDetailsView extends StatefulWidget {
-  static const routeName = '/sampleItemDetails';
+class PostItemDetailsView extends StatefulWidget {
+  static const routeName = '/postDetails';
 
-  final SampleItem item;
+  final PostItem item;
 
-  const SampleItemDetailsView({
+  const PostItemDetailsView({
     Key? key,
     required this.item,
   }) : super(key: key);
 
   @override
-  _SampleItemDetailsViewState createState() => _SampleItemDetailsViewState();
+  _PostItemDetailsViewState createState() => _PostItemDetailsViewState();
 }
 
-class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
+class _PostItemDetailsViewState extends State<PostItemDetailsView> {
   late String message;
   late List<String> hashtags;
   DateTime? scheduledDate;

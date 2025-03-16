@@ -8,27 +8,27 @@ import '../shared/post_item_view.dart';
 import '../shared/post_item.dart';
 import '../shared/post_item_utils.dart'; // Import the new utility file
 
-class SampleItemListView extends StatefulWidget {
-  const SampleItemListView({
+class PostItemListView extends StatefulWidget {
+  const PostItemListView({
     super.key,
     this.items = const [],
   });
 
   static const routeName = '/';
 
-  final List<SampleItem> items;
+  final List<PostItem> items;
 
   @override
-  _SampleItemListViewState createState() => _SampleItemListViewState();
+  _PostItemListViewState createState() => _PostItemListViewState();
 }
 
-class _SampleItemListViewState extends State<SampleItemListView> {
-  late List<SampleItem> items;
+class _PostItemListViewState extends State<PostItemListView> {
+  late List<PostItem> items;
 
   @override
   void initState() {
     super.initState();
-    items = List<SampleItem>.of(widget.items);
+    items = List<PostItem>.of(widget.items);
   }
 
   Future<void> _addItem() async {
@@ -36,11 +36,11 @@ class _SampleItemListViewState extends State<SampleItemListView> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        items.add(SampleItem(
+        items.add(PostItem(
           id: items.length + 1,
           message: data['message'],
           imageUrl: data['imageUrl'],
-          likes: Random().nextInt(999), // Add random number of likes
+          likes: Random().nextInt(999),
           hashtags: data['hashtags'] != null ? List<String>.from(data['hashtags']) : [],
           scheduledDate: data['scheduledDate'] != null ? DateTime.parse(data['scheduledDate']) : null,
         ));
