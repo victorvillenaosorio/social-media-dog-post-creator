@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../config.dart';
 import '../shared/post_item_view.dart';
 import '../shared/post_item_utils.dart'; // Import the utility file
 
@@ -176,7 +177,7 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
   }
 
   Future<void> _savePost() async {
-    final url = Uri.parse('http://localhost:3000/post');
+    final url = Uri.parse('${Config.apiBaseUrl}/post');
     final postData = {
       'id': widget.item.id,
       'message': message,
@@ -236,7 +237,7 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
         Navigator.of(context).pop();
     }
 
-    final url = Uri.parse('http://localhost:3000/post/${widget.item.id}');
+    final url = Uri.parse('${Config.apiBaseUrl}/post/${widget.item.id}');
 
     try {
       final response = await http.delete(url);

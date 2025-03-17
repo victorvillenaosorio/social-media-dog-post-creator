@@ -1,16 +1,15 @@
-import 'package:dogs_social_posts/src/post_feature/post_item_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
+import 'package:dogs_social_posts/src/post_feature/post_item_details_view.dart';
+import 'package:dogs_social_posts/main.dart';
 
 import '../settings/settings_view.dart';
 import '../shared/post_item_view.dart';
 import '../shared/post_item.dart';
-import '../shared/post_item_utils.dart'; // Import the new utility file
-
-// Import the global route observer
-import 'package:dogs_social_posts/main.dart'; // Replace with the actual path to your main.dart
+import '../shared/post_item_utils.dart';
+import '../config.dart';
 
 class PostItemListView extends StatefulWidget {
   const PostItemListView({
@@ -65,7 +64,7 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
     });
 
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/posts'));
+      final response = await http.get(Uri.parse('${Config.apiBaseUrl}/posts'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         final fetchedItems = data.map((post) {
@@ -99,7 +98,7 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
   }
 
   Future<void> _addItem() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/post'));
+    final response = await http.get(Uri.parse('${Config.apiBaseUrl}/post'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final newItem = PostItem(
@@ -157,7 +156,6 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
           final scheduledDateColor = getScheduledDateColor(item.scheduledDate);
-
           return PostItemView(scheduledDateColor: scheduledDateColor, item: item);
         },
       ),
