@@ -40,13 +40,17 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(context)!);
-    _fetchPosts();
   }
 
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didPush() {
+    _fetchPosts();
   }
 
   @override
@@ -79,13 +83,11 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
           items = fetchedItems.cast<PostItem>();
         });
       } else {
-        print('Failed to fetch posts');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to fetch posts: ${response.reasonPhrase}')),
         );
       }
     } catch (e) {
-      print('Error fetching posts: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An error occurred while fetching posts')),
       );
@@ -127,7 +129,7 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text('Instagram posts'),
         actions: [
           PopupMenuButton<String>(
             onSelected: (String result) {
@@ -135,19 +137,12 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
                 case 'settings':
                   Navigator.pushNamed(context, SettingsView.routeName);
                   break;
-                case 'post':
-                  // TODO
-                  break;
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
                 value: 'settings',
                 child: Text('Settings'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'post',
-                child: Text('Post'),
               ),
             ],
           ),
