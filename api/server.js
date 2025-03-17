@@ -57,7 +57,7 @@ app.post('/post', (req, res) => {
     if (!message || !imageUrl || !hashtags) {
         return res.status(400).json({ message: "All fields are required" });
     }
-    const newPost = { id: uuidv4(), message, imageUrl, hashtags, scheduledDate }; // Generate custom ID
+    const newPost = { id: uuidv4(), message, imageUrl, hashtags, scheduledDate };
     posts.push(newPost);
     res.status(201).json(newPost);
 });
