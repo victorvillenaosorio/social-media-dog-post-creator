@@ -272,20 +272,14 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
             child: FractionallySizedBox(
               widthFactor: constraints.maxWidth > 600 ? 0.6 : 0.9,
               heightFactor: constraints.maxHeight > 800 ? 0.8 : 0.9,
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: PostItemView(
-                    scheduledDateColor: scheduledDateColor,
-                    item: widget.item.copyWith(
-                      message: message,
-                      hashtags: hashtags,
-                      scheduledDate: scheduledDate,
-                    ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: PostItemView(
+                  scheduledDateColor: scheduledDateColor,
+                  item: widget.item.copyWith(
+                    message: message,
+                    hashtags: hashtags,
+                    scheduledDate: scheduledDate,
                   ),
                 ),
               ),
