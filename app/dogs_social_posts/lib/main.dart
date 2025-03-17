@@ -4,6 +4,8 @@ import 'src/app.dart';
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+
 void main() async {
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.

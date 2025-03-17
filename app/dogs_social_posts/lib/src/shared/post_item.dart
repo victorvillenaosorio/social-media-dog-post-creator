@@ -1,5 +1,5 @@
 class PostItem {
-  final int id;
+  final String id;
   final String? message;
   final List<String> hashtags;
   final String? imageUrl;
@@ -16,7 +16,7 @@ class PostItem {
   });
 
   PostItem copyWith({
-    int? id,
+    String? id,
     String? message,
     List<String>? hashtags,
     String? imageUrl,

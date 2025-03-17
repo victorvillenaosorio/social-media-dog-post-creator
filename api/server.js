@@ -8,7 +8,7 @@ const port = 3000;
 
 const corsOptions = {
   origin: '*',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
@@ -63,23 +63,43 @@ app.get('/post', async (req, res) => {
 });
 
 app.post('/post', (req, res) => {
-    const { message, imageUrl, hashtags, publicationDate } = req.body;
+    const { message, imageUrl, hashtags, scheduledDate } = req.body;
     if (!message || !imageUrl || !hashtags) {
         return res.status(400).json({ message: "All fields are required" });
     }
-    const newPost = { id: uuidv4(), message, imageUrl, hashtags, publicationDate }; // Generate custom ID
+    const newPost = { id: uuidv4(), message, imageUrl, hashtags, scheduledDate }; // Generate custom ID
     posts.push(newPost);
     res.status(201).json(newPost);
 });
 
 app.put('/post', (req, res) => {
-  const { id, message, imageUrl, hashtags, publicationDate } = req.body;
-  if (!id || !message || !imageUrl || !hashtags) {
-      return res.status(400).json({ message: "All fields are required" });
-  }
-  const newPost = { message, imageUrl, hashtags, publicationDate };
-  posts.push(newPost);
-  res.status(201).json(newPost);
+    const { id, message, imageUrl, hashtags, scheduledDate } = req.body;
+
+    if (!id || !message || !imageUrl || !hashtags) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const postIndex = posts.findIndex(post => post.id === id);
+
+    if (postIndex === -1) {
+        return res.status(404).json({ message: "Post not found" });
+    }
+
+    posts[postIndex] = { id, message, imageUrl, hashtags, scheduledDate };
+
+    res.status(200).json(posts[postIndex]);
+});
+
+app.delete('/post/:id', (req, res) => {
+    const { id } = req.params;
+    const postIndex = posts.findIndex(post => post.id === id);
+
+    if (postIndex === -1) {
+        return res.status(404).json({ message: "Post not found" });
+    }
+
+    posts.splice(postIndex, 1);
+    res.status(200).json({ message: "Post deleted successfully" });
 });
 
 app.get('/posts', (req, res) => {

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:dogs_social_posts/src/shared/post_item.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../shared/post_item_view.dart';
-import '../shared/post_item_utils.dart'; // Import the new utility file
+import '../shared/post_item_utils.dart'; // Import the utility file
 
 class PostItemDetailsView extends StatefulWidget {
   static const routeName = '/postDetails';
@@ -173,6 +175,89 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
     );
   }
 
+  Future<void> _savePost() async {
+    final url = Uri.parse('http://localhost:3000/post');
+    final postData = {
+      'id': widget.item.id,
+      'message': message,
+      'hashtags': hashtags,
+      'imageUrl': widget.item.imageUrl,
+      'likes': widget.item.likes,
+      'scheduledDate': scheduledDate?.toIso8601String(),
+    };
+
+    try {
+      final response = widget.item.id == ''
+          ? await http.post(url, body: json.encode(postData), headers: {'Content-Type': 'application/json'})
+          : await http.put(url, body: json.encode(postData), headers: {'Content-Type': 'application/json'});
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Post saved successfully!')),
+        );
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save post: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving post: $e')),
+      );
+    }
+  }
+
+  Future<void> _deletePost() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Post'),
+          content: const Text('Are you sure you want to delete this post?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm != true) return;
+
+    if (widget.item.id == '')
+    {
+        Navigator.of(context).pop();
+    }
+
+    final url = Uri.parse('http://localhost:3000/post/${widget.item.id}');
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Post deleted successfully!')),
+        );
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete post: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting post: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color scheduledDateColor = getScheduledDateColor(scheduledDate); // Use the utility function
@@ -227,6 +312,19 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
             onPressed: _schedulePost,
             tooltip: 'Schedule Post',
             child: const Icon(Icons.schedule),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: _savePost,
+            tooltip: 'Save Post',
+            child: const Icon(Icons.save),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: _deletePost,
+            tooltip: 'Delete Post',
+            backgroundColor: Colors.red,
+            child: const Icon(Icons.delete),
           ),
         ],
       ),

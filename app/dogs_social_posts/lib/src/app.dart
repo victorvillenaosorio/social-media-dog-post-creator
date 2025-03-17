@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../main.dart';
 import 'post_feature/post_item_details_view.dart';
 import 'post_feature/post_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -61,6 +62,8 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
 
+        navigatorObservers: [routeObserver],
+
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
@@ -71,7 +74,7 @@ class MyApp extends StatelessWidget {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case PostItemDetailsView.routeName:
-                    return PostItemDetailsView(item: PostItem(id: 1, message: null, hashtags: [], imageUrl: null, likes: 0, scheduledDate: null));
+                    return PostItemDetailsView(item: PostItem(id: '1', message: null, hashtags: [], imageUrl: null, likes: 0, scheduledDate: null));
                   case PostItemListView.routeName:
                   default:
                     return const PostItemListView();

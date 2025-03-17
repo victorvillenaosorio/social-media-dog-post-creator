@@ -1,3 +1,4 @@
+import 'package:dogs_social_posts/src/post_feature/post_item_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,6 +8,9 @@ import '../settings/settings_view.dart';
 import '../shared/post_item_view.dart';
 import '../shared/post_item.dart';
 import '../shared/post_item_utils.dart'; // Import the new utility file
+
+// Import the global route observer
+import 'package:dogs_social_posts/main.dart'; // Replace with the actual path to your main.dart
 
 class PostItemListView extends StatefulWidget {
   const PostItemListView({
@@ -22,8 +26,9 @@ class PostItemListView extends StatefulWidget {
   _PostItemListViewState createState() => _PostItemListViewState();
 }
 
-class _PostItemListViewState extends State<PostItemListView> {
+class _PostItemListViewState extends State<PostItemListView> with RouteAware {
   late List<PostItem> items;
+  bool _isFetching = false;
 
   @override
   void initState() {
@@ -31,22 +36,90 @@ class _PostItemListViewState extends State<PostItemListView> {
     items = List<PostItem>.of(widget.items);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    _fetchPosts();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _fetchPosts();
+  }
+
+  Future<void> _fetchPosts() async {
+    if (_isFetching) return;
+    setState(() {
+      _isFetching = true;
+    });
+
+    try {
+      final response = await http.get(Uri.parse('http://localhost:3000/posts'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        final fetchedItems = data.map((post) {
+          return PostItem(
+            id: post['id'],
+            message: post['message'],
+            imageUrl: post['imageUrl'],
+            likes: post['likes'] ?? 0,
+            hashtags: post['hashtags'] != null ? List<String>.from(post['hashtags']) : [],
+            scheduledDate: post['scheduledDate'] != null ? DateTime.parse(post['scheduledDate']) : null,
+          );
+        }).toList();
+
+        setState(() {
+          items = fetchedItems.cast<PostItem>();
+        });
+      } else {
+        print('Failed to fetch posts');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch posts: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (e) {
+      print('Error fetching posts: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('An error occurred while fetching posts')),
+      );
+    } finally {
+      setState(() {
+        _isFetching = false;
+      });
+    }
+  }
+
   Future<void> _addItem() async {
     final response = await http.get(Uri.parse('http://localhost:3000/post'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      setState(() {
-        items.add(PostItem(
-          id: items.length + 1,
-          message: data['message'],
-          imageUrl: data['imageUrl'],
-          likes: Random().nextInt(999),
-          hashtags: data['hashtags'] != null ? List<String>.from(data['hashtags']) : [],
-          scheduledDate: data['scheduledDate'] != null ? DateTime.parse(data['scheduledDate']) : null,
-        ));
-      });
-    } else {      
+      final newItem = PostItem(
+        id: '',
+        message: data['message'],
+        imageUrl: data['imageUrl'],
+        likes: Random().nextInt(999),
+        hashtags: data['hashtags'] != null ? List<String>.from(data['hashtags']) : [],
+        scheduledDate: data['scheduledDate'] != null ? DateTime.parse(data['scheduledDate']) : null,
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PostItemDetailsView(item: newItem),
+        ),
+      );
+    } else {
       print('Failed to load post');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to generate a new post: ${response.reasonPhrase}')),
+      );
     }
   }
 
