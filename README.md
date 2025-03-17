@@ -91,6 +91,14 @@ The app uses a centralized configuration file located at `lib/src/config/config.
 | PUT    | `/posts/:id`      | Update an existing post   |
 | DELETE | `/posts/:id`      | Delete a post             |
 
+### Image Source
+
+The project retrieves random dog images from the [random.dog API](https://random.dog/woof.json). This API is developed and maintained by the following GitHub repository:
+
+[https://github.com/adenflorian/random.dog](https://github.com/adenflorian/random.dog)
+
+Special thanks to the contributors of the `random.dog` project for providing this amazing service!
+
 ---
 
 ## Folder Structure
@@ -122,7 +130,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [Flutter Documentation](https://flutter.dev/docs)
 - [Node.js Documentation](https://nodejs.org/en/docs/)
 - [Internationalizing Flutter Apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
-
+- [https://github.com/adenflorian/random.dog](https://github.com/adenflorian/random.dog)
 
 
 
