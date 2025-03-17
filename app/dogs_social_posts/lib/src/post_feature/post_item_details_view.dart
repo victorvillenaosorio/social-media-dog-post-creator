@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 import '../config.dart';
 import '../shared/post_item_view.dart';
-import '../shared/post_item_utils.dart'; // Import the utility file
 
 class PostItemDetailsView extends StatefulWidget {
   static const routeName = '/postDetails';
@@ -261,8 +260,6 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    final Color scheduledDateColor = getScheduledDateColor(scheduledDate); // Use the utility function
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Post details'),
@@ -276,7 +273,6 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: PostItemView(
-                  scheduledDateColor: scheduledDateColor,
                   item: widget.item.copyWith(
                     message: message,
                     hashtags: hashtags,

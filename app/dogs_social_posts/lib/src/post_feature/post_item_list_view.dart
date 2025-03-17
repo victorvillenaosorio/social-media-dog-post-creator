@@ -8,7 +8,6 @@ import 'package:dogs_social_posts/main.dart';
 import '../settings/settings_view.dart';
 import '../shared/post_item_view.dart';
 import '../shared/post_item.dart';
-import '../shared/post_item_utils.dart';
 import '../config.dart';
 
 class PostItemListView extends StatefulWidget {
@@ -155,8 +154,7 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
-          final scheduledDateColor = getScheduledDateColor(item.scheduledDate);
-          return PostItemView(scheduledDateColor: scheduledDateColor, item: item);
+          return PostItemView(item: item);
         },
       ),
       floatingActionButton: FloatingActionButton(
