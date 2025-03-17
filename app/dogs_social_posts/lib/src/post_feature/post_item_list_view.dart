@@ -167,6 +167,7 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'addItem',
         onPressed: _addItem,
         child: const Icon(Icons.add),
       ),

@@ -297,30 +297,35 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: 'editMessage',
             onPressed: _editMessage,
             tooltip: 'Edit Message',
             child: const Icon(Icons.edit),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
+            heroTag: 'editHashtags',
             onPressed: _editHashtags,
             tooltip: 'Edit Hashtags',
             child: const Icon(Icons.tag),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
+            heroTag: 'schedulePost',
             onPressed: _schedulePost,
             tooltip: 'Schedule Post',
             child: const Icon(Icons.schedule),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
+            heroTag: 'savePost',
             onPressed: _savePost,
             tooltip: 'Save Post',
             child: const Icon(Icons.save),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
+            heroTag: 'deletePost',
             onPressed: _deletePost,
             tooltip: 'Delete Post',
             backgroundColor: Colors.red,
