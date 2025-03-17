@@ -1,19 +1,21 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid'); // Import uuid
 
 const app = express();
 const port = 3000;
 
 const corsOptions = {
   origin: '*',
-  methods: ['GET'],
+  methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
 
 const phrases = [
     "Gracias a Barkibu, Max superó una cirugía complicada sin preocupaciones económicas.",
@@ -36,9 +38,11 @@ const phrases = [
     "El tratamiento para la diabetes de Max fue costoso, pero Barkibu hizo que fuera accesible y continuo.",
     "Barkibu ayudó a Bruno a superar una infección grave sin preocupaciones económicas para su dueño.",
     "Con la ayuda de Barkibu, Bella pudo recibir atención avanzada para su problema renal sin generar deudas a su dueño."
-  ];
+];
 
-  const hashtags = ['#cute', '#CuteDog', '#doggo', '#puppy', '#fluffy', '#adorable', '#pet', '#love', '#happy', '#BestFriend', '#PuppyLove', '#DogsOfInstagram', '#DogLover'];
+const hashtags = ['#cute', '#CuteDog', '#doggo', '#puppy', '#fluffy', '#adorable', '#pet', '#love', '#happy', '#BestFriend', '#PuppyLove', '#DogsOfInstagram', '#DogLover'];
+
+let posts = [];
 
 app.get('/post', async (req, res) => {
     try {      
@@ -56,8 +60,32 @@ app.get('/post', async (req, res) => {
     } catch (error) {      
       res.status(500).json({ message: "Error while trying to create the image", error: error.message });
     }
-  });
-  
-  app.listen(port, () => {
+});
+
+app.post('/post', (req, res) => {
+    const { message, imageUrl, hashtags, publicationDate } = req.body;
+    if (!message || !imageUrl || !hashtags) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+    const newPost = { id: uuidv4(), message, imageUrl, hashtags, publicationDate }; // Generate custom ID
+    posts.push(newPost);
+    res.status(201).json(newPost);
+});
+
+app.put('/post', (req, res) => {
+  const { id, message, imageUrl, hashtags, publicationDate } = req.body;
+  if (!id || !message || !imageUrl || !hashtags) {
+      return res.status(400).json({ message: "All fields are required" });
+  }
+  const newPost = { message, imageUrl, hashtags, publicationDate };
+  posts.push(newPost);
+  res.status(201).json(newPost);
+});
+
+app.get('/posts', (req, res) => {
+    res.json(posts);
+});
+
+app.listen(port, () => {
     console.log(`Server running: http://localhost:${port}`);
-  });
+});
