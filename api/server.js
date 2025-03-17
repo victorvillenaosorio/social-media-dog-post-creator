@@ -45,20 +45,31 @@ const hashtags = ['#cute', '#CuteDog', '#doggo', '#puppy', '#fluffy', '#adorable
 let posts = [];
 
 app.get('/post', async (req, res) => {
-    try {      
-      const response = await axios.get('https://random.dog/woof.json');
-        
-      const { url } = response.data;        
-      const randomMessage = phrases[Math.floor(Math.random() * phrases.length)];      
-      const randomHashtags = hashtags.sort(() => 0.5 - Math.random()).slice(0, 2);
+    try {
+        let attempts = 0;
+        let response;
+        let url;
 
-      res.json({
-        message: randomMessage,
-        imageUrl: url,
-        hashtags: randomHashtags
-      });
-    } catch (error) {      
-      res.status(500).json({ message: "Error while trying to create the image", error: error.message });
+        do {
+            response = await axios.get('https://random.dog/woof.json');
+            url = response.data.url;
+            attempts++;
+        } while (url.endsWith('.mp4') && attempts < 5);
+
+        if (url.endsWith('.mp4')) {
+            return res.status(500).json({ message: "Failed to fetch a valid image URL after 5 attempts" });
+        }
+
+        const randomMessage = phrases[Math.floor(Math.random() * phrases.length)];
+        const randomHashtags = hashtags.sort(() => 0.5 - Math.random()).slice(0, 2);
+
+        res.json({
+            message: randomMessage,
+            imageUrl: url,
+            hashtags: randomHashtags
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error while trying to create the image", error: error.message });
     }
 });
 
