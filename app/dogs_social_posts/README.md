@@ -1,8 +1,8 @@
-# Social Media Dog Post Creator
+# Instagram Dog Post Creator
 
 This repository contains two main components:
 
-1. **Flutter App**: A mobile application for creating, managing, and scheduling social media posts for dogs.
+1. **Flutter App**: A mobile application for creating, managing, and scheduling instagram posts for dogs.
 2. **Node.js API**: A backend API for managing posts, including CRUD operations.
 
 ---
