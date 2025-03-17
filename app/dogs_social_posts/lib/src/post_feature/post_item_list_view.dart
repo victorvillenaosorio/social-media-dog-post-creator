@@ -155,7 +155,7 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+          crossAxisCount: 1,
           childAspectRatio: 0.8,
         ),
         itemCount: items.length,
