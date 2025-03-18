@@ -5,17 +5,20 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../config.dart';
+import '../services/post_service.dart';
+import '../shared/action_button_widget.dart';
 import '../shared/post_item_view.dart';
 
 class PostItemDetailsView extends StatefulWidget {
   static const routeName = '/postDetails';
-
+  final PostService postService = PostService(Config.apiBaseUrl);
   final PostItem item;
 
-  const PostItemDetailsView({
+  PostItemDetailsView({
     Key? key,
     required this.item,
   }) : super(key: key);
+
 
   @override
   _PostItemDetailsViewState createState() => _PostItemDetailsViewState();
@@ -68,8 +71,8 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
     );
   }
 
-  void _editMessage() {
-    _showEditDialog('Edit Message', message, (newMessage) {
+void _editMessage() {
+  _showEditDialog('Edit Message', message, (newMessage) {
       setState(() {
         message = newMessage;
       });
@@ -176,36 +179,32 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
   }
 
   Future<void> _savePost() async {
-    final url = Uri.parse('${Config.apiBaseUrl}/post');
-    final postData = {
-      'id': widget.item.id,
-      'message': message,
-      'hashtags': hashtags,
-      'imageUrl': widget.item.imageUrl,
-      'scheduledDate': scheduledDate?.toIso8601String(),
-    };
+  final postData = {
+    'id': widget.item.id,
+    'message': message,
+    'hashtags': hashtags,
+    'imageUrl': widget.item.imageUrl,
+    'scheduledDate': scheduledDate?.toIso8601String(),
+  };
 
-    try {
-      final response = widget.item.id == ''
-          ? await http.post(url, body: json.encode(postData), headers: {'Content-Type': 'application/json'})
-          : await http.put(url, body: json.encode(postData), headers: {'Content-Type': 'application/json'});
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post saved successfully!')),
-        );
-        Navigator.of(context).pop();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save post: ${response.reasonPhrase}')),
-        );
-      }
-    } catch (e) {
+  try {
+    final response = await widget.postService.savePost(postData, isNew: widget.item.id == '');
+    if (response.statusCode == 200 || response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving post: $e')),
+        const SnackBar(content: Text('Post saved successfully!')),
+      );
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save post: ${response.reasonPhrase}')),
       );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error saving post: $e')),
+    );
   }
+}
 
   Future<void> _deletePost() async {
     final confirm = await showDialog<bool>(
@@ -286,41 +285,42 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            heroTag: 'editMessage',
-            onPressed: _editMessage,
+          ActionButton(
+            tag: 'editMessage',
             tooltip: 'Edit Message',
-            child: const Icon(Icons.edit),
+            icon: Icons.edit,
+            onPressed: _editMessage,
           ),
           const SizedBox(height: 16),
-          FloatingActionButton(
-            heroTag: 'editHashtags',
-            onPressed: _editHashtags,
+          ActionButton(
+            tag: 'editHashtags',
             tooltip: 'Edit Hashtags',
-            child: const Icon(Icons.tag),
+            icon: Icons.tag,
+            onPressed: _editHashtags,
           ),
           const SizedBox(height: 16),
-          FloatingActionButton(
-            heroTag: 'schedulePost',
-            onPressed: _schedulePost,
+          ActionButton(
+            tag: 'schedulePost',
             tooltip: 'Schedule Post',
-            child: const Icon(Icons.schedule),
+            icon: Icons.schedule,
+            onPressed: _schedulePost,
           ),
           const SizedBox(height: 16),
-          FloatingActionButton(
-            heroTag: 'savePost',
-            onPressed: _savePost,
+          ActionButton(
+            tag: 'savePost',
             tooltip: 'Save Post',
-            child: const Icon(Icons.save),
+            icon: Icons.save,
+            onPressed: _savePost,
           ),
           const SizedBox(height: 16),
-          FloatingActionButton(
-            heroTag: 'deletePost',
-            onPressed: _deletePost,
+          ActionButton(
+            tag: 'deletePost',
             tooltip: 'Delete Post',
+            icon: Icons.delete,
             backgroundColor: Colors.red,
-            child: const Icon(Icons.delete),
+            onPressed: _deletePost,
           ),
+          
         ],
       ),
     );
