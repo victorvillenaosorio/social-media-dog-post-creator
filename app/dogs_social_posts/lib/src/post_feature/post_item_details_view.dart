@@ -182,7 +182,6 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
       'message': message,
       'hashtags': hashtags,
       'imageUrl': widget.item.imageUrl,
-      'likes': widget.item.likes,
       'scheduledDate': scheduledDate?.toIso8601String(),
     };
 

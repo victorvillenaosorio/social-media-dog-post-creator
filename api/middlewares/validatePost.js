@@ -1,10 +1,11 @@
 const Joi = require('joi');
 
 const postCreationSchema = Joi.object({
+    id: Joi.any().optional(),
     message: Joi.string().required(),
     imageUrl: Joi.string().uri().required(),
     hashtags: Joi.array().items(Joi.string()).required(),
-    scheduledDate: Joi.date().optional()
+    scheduledDate: Joi.any().optional()
 });
 
 const validatePostCreation = (req, res, next) => {
@@ -20,7 +21,7 @@ const postUpdateSchema = Joi.object({
     message: Joi.string().required(),
     imageUrl: Joi.string().uri().required(),
     hashtags: Joi.array().items(Joi.string()).required(),
-    scheduledDate: Joi.date().optional()
+    scheduledDate: Joi.any().optional()
 });
 
 const validatePostUpdate = (req, res, next) => {
