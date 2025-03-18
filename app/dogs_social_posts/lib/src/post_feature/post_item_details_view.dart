@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../config.dart';
 import '../services/post_service.dart';
 import '../shared/action_button_widget.dart';
+import '../shared/edit_dialog.dart';
 import '../shared/post_item_view.dart';
 
 class PostItemDetailsView extends StatefulWidget {
@@ -38,38 +39,15 @@ class _PostItemDetailsViewState extends State<PostItemDetailsView> {
   }
 
   void _showEditDialog(String title, String initialValue, Function(String) onSubmit) {
-    final TextEditingController controller = TextEditingController(text: initialValue);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: title,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                onSubmit(controller.text);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Submit'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  showDialog(
+    context: context,
+    builder: (context) => EditDialog(
+      title: title,
+      initialValue: initialValue,
+      onSubmit: onSubmit,
+    ),
+  );
+}
 
 void _editMessage() {
   _showEditDialog('Edit Message', message, (newMessage) {
@@ -178,7 +156,7 @@ void _editMessage() {
     );
   }
 
-  Future<void> _savePost() async {
+Future<void> _savePost() async {
   final postData = {
     'id': widget.item.id,
     'message': message,
@@ -188,7 +166,10 @@ void _editMessage() {
   };
 
   try {
-    final response = await widget.postService.savePost(postData, isNew: widget.item.id == '');
+    final response = await widget.postService.savePost(
+      postData,
+      isNew: widget.item.id == '',
+    );
     if (response.statusCode == 200 || response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Post saved successfully!')),
@@ -196,7 +177,7 @@ void _editMessage() {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save post: ${response.reasonPhrase}')),
+        const SnackBar(content: Text('Failed to save post')),
       );
     }
   } catch (e) {
@@ -282,46 +263,12 @@ void _editMessage() {
           );
         },
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ActionButton(
-            tag: 'editMessage',
-            tooltip: 'Edit Message',
-            icon: Icons.edit,
-            onPressed: _editMessage,
-          ),
-          const SizedBox(height: 16),
-          ActionButton(
-            tag: 'editHashtags',
-            tooltip: 'Edit Hashtags',
-            icon: Icons.tag,
-            onPressed: _editHashtags,
-          ),
-          const SizedBox(height: 16),
-          ActionButton(
-            tag: 'schedulePost',
-            tooltip: 'Schedule Post',
-            icon: Icons.schedule,
-            onPressed: _schedulePost,
-          ),
-          const SizedBox(height: 16),
-          ActionButton(
-            tag: 'savePost',
-            tooltip: 'Save Post',
-            icon: Icons.save,
-            onPressed: _savePost,
-          ),
-          const SizedBox(height: 16),
-          ActionButton(
-            tag: 'deletePost',
-            tooltip: 'Delete Post',
-            icon: Icons.delete,
-            backgroundColor: Colors.red,
-            onPressed: _deletePost,
-          ),
-          
-        ],
+      floatingActionButton: PostItemDetailsActionButtons(
+        onEditMessage: _editMessage,
+        onEditHashtags: _editHashtags,
+        onSchedulePost: _schedulePost,
+        onSavePost: _savePost,
+        onDeletePost: _deletePost,
       ),
     );
   }

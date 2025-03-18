@@ -1,29 +1,62 @@
 import 'package:flutter/material.dart';
 
-class ActionButton extends StatelessWidget {
-  final String tooltip;
-  final IconData icon;
-  final VoidCallback onPressed;
-  final String tag;
-  final Color? backgroundColor;
+class PostItemDetailsActionButtons extends StatelessWidget {
+   final VoidCallback onEditMessage;
+  final VoidCallback onEditHashtags;
+  final VoidCallback onSchedulePost;
+  final VoidCallback onSavePost;
+  final VoidCallback onDeletePost;
 
-  const ActionButton({
+  const PostItemDetailsActionButtons({
     Key? key,
-    required this.tooltip,
-    required this.icon,
-    required this.onPressed,
-    required this.tag,
-    this.backgroundColor,
+    required this.onEditMessage,
+    required this.onEditHashtags,
+    required this.onSchedulePost,
+    required this.onSavePost,
+    required this.onDeletePost,
   }) : super(key: key);
 
-  @override
+@override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      tooltip: tooltip,
-      onPressed: onPressed,
-      backgroundColor: backgroundColor,
-      heroTag: tag,
-      child: Icon(icon),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FloatingActionButton(
+          heroTag: 'editMessage',
+          tooltip: 'Edit Message',
+          onPressed: onEditMessage,
+          child: const Icon(Icons.edit),
+        ),
+        const SizedBox(height: 16),
+        FloatingActionButton(
+          heroTag: 'editHashtags',
+          tooltip: 'Edit Hashtags',
+          onPressed: onEditHashtags,
+          child: const Icon(Icons.tag),
+        ),
+        const SizedBox(height: 16),
+        FloatingActionButton(
+          heroTag: 'schedulePost',
+          tooltip: 'Schedule Post',
+          onPressed: onSchedulePost,
+          child: const Icon(Icons.schedule),
+        ),
+        const SizedBox(height: 16),
+        FloatingActionButton(
+          heroTag: 'savePost',
+          tooltip: 'Save Post',
+          onPressed: onSavePost,
+          child: const Icon(Icons.save),
+        ),
+        const SizedBox(height: 16),
+        FloatingActionButton(
+          heroTag: 'deletePost',
+          tooltip: 'Delete Post',
+          backgroundColor: Colors.red,
+          onPressed: onDeletePost,
+          child: const Icon(Icons.delete),
+        ),
+      ],
     );
   }
 }
