@@ -1,14 +1,14 @@
-import 'dart:convert';
-import 'package:dogs_social_posts/src/shared/post_item.dart';
+import 'package:dogs_social_posts/src/post_feature/post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import 'post_service.dart';
 import '../config.dart';
-import '../services/post_service.dart';
 import '../shared/action_button_widget.dart';
 import '../shared/edit_dialog.dart';
-import '../shared/post_item_view.dart';
+import 'post_item_view.dart';
+import 'post_item.dart';
 
 class PostItemDetailsView extends StatefulWidget {
   static const routeName = '/postDetails';

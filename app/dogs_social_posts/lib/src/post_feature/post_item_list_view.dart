@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:math';
 import 'package:dogs_social_posts/src/post_feature/post_item_details_view.dart';
 import 'package:dogs_social_posts/main.dart';
 
+import 'post_service.dart';
 import '../settings/settings_view.dart';
-import '../shared/post_item_view.dart';
-import '../shared/post_item.dart';
+import 'post_item_view.dart';
+import 'post_item.dart';
 import '../config.dart';
 
 class PostItemListView extends StatefulWidget {
@@ -27,6 +25,8 @@ class PostItemListView extends StatefulWidget {
 class _PostItemListViewState extends State<PostItemListView> with RouteAware {
   late List<PostItem> items;
   bool _isFetching = false;
+
+  final PostService _postService = PostService(Config.apiBaseUrl);
 
   @override
   void initState() {
@@ -63,28 +63,10 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
     });
 
     try {
-      final response = await http.get(Uri.parse('${Config.apiBaseUrl}/posts'));
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        final fetchedItems = data.map((post) {
-          return PostItem(
-            id: post['id'],
-            message: post['message'],
-            imageUrl: post['imageUrl'],
-            likes: post['likes'] ?? 0,
-            hashtags: post['hashtags'] != null ? List<String>.from(post['hashtags']) : [],
-            scheduledDate: post['scheduledDate'] != null ? DateTime.parse(post['scheduledDate']) : null,
-          );
-        }).toList();
-
-        setState(() {
-          items = fetchedItems.cast<PostItem>();
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to fetch posts: ${response.reasonPhrase}')),
-        );
-      }
+      final fetchedItems = await _postService.fetchPosts();
+      setState(() {
+        items = fetchedItems;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An error occurred while fetching posts')),
@@ -97,28 +79,17 @@ class _PostItemListViewState extends State<PostItemListView> with RouteAware {
   }
 
   Future<void> _addItem() async {
-    final response = await http.get(Uri.parse('${Config.apiBaseUrl}/post'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final newItem = PostItem(
-        id: '',
-        message: data['message'],
-        imageUrl: data['imageUrl'],
-        likes: Random().nextInt(999),
-        hashtags: data['hashtags'] != null ? List<String>.from(data['hashtags']) : [],
-        scheduledDate: data['scheduledDate'] != null ? DateTime.parse(data['scheduledDate']) : null,
-      );
-
+    try {
+      final newItem = await _postService.generateNewPost();
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PostItemDetailsView(item: newItem),
         ),
       );
-    } else {
-      print('Failed to load post');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to generate a new post: ${response.reasonPhrase}')),
+        const SnackBar(content: Text('Failed to generate a new post')),
       );
     }
   }

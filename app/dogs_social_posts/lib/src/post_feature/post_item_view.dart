@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 
 import '../config.dart';
-import '../post_feature/post_item_details_view.dart';
+import 'post_item_details_view.dart';
 import '../settings/settings_view.dart';
 import 'post_item.dart';
 
