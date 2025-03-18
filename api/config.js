@@ -1,5 +1,6 @@
 const config = {
-    randomDogApiUrl: 'https://random.dog/woof.json'
+    randomDogApiUrl: 'https://random.dog/woof.json',
+    maxRetryAttempts: 5
 };
 
 module.exports = config;
